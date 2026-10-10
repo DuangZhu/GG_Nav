@@ -5,9 +5,8 @@ handles:
 
   * command line parsing (union of the flags accepted by every task);
   * distributed initialisation via :func:`init_distributed_mode`;
-  * loading of the primary VLM policy (``InternVLAN1ForCausalLM`` when
-    ``--local_planner=DiT`` is passed, otherwise
-    ``Qwen3VLForConditionalGeneration``);
+  * loading of the primary VLM policy (``Qwen3VLForConditionalGeneration``)
+    for ``shortest_path`` evaluation;
   * optional loading of a second detector model driven by
     ``--oracle_detector_model_path``;
   * dispatching to the correct task-specific ``VLNEvaluator`` through
@@ -22,24 +21,10 @@ that new users can grasp the launcher in one glance.
 import argparse
 import json
 import os
-import sys
-
-# ---------------------------------------------------------------------------
-# Ensure the in-repo ``qwenvl`` package (bundled under Qwen3-VL/qwen-vl-finetune)
-# is importable without requiring the caller to pre-set ``PYTHONPATH``. The
-# insertion is idempotent so it is safe to run twice.
-# ---------------------------------------------------------------------------
-_QWENVL_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "Qwen3-VL", "qwen-vl-finetune")
-)
-if os.path.isdir(_QWENVL_ROOT) and _QWENVL_ROOT not in sys.path:
-    sys.path.insert(0, _QWENVL_ROOT)
 
 import torch
 import torch.distributed as dist
 from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
-
-from qwenvl.internvla_n1.internvla_n1 import InternVLAN1ForCausalLM
 
 from dist import init_distributed_mode, get_rank, get_world_size
 from npc.simple_npc.simple_npc import SimpleNPC
@@ -72,7 +57,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--processor_path",
         type=str,
-        default="/mnt/inspurfs/efm_t/zhushaohao/init_checkpoint/Qwen/Qwen3-VL-4B-Instruct",
+        default="",
+        help="Processor checkpoint; defaults to --model_path.",
     )
     parser.add_argument(
         "--dtype",
@@ -85,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--baseline_config_path", type=str, default="config/vln_r2r.yaml")
     parser.add_argument("--eval_split", type=str, default="val_unseen")
     parser.add_argument("--model_name", type=str, default="gpt-4o")
-    parser.add_argument("--local_planner", type=str, default="shortest_path")
+    parser.add_argument("--local_planner", type=str, default="shortest_path", choices=["shortest_path"])
     parser.add_argument("--openai_api_key", type=str, default="habitat/npc/api_key/api_key.txt")
     parser.add_argument("--base_url", type=str, default="localhost:0.0.0.0")
     parser.add_argument("--task", type=str, default="instance")
@@ -134,31 +120,17 @@ def _load_models(args: argparse.Namespace, device: torch.device):
     """
     model_dtype = _resolve_dtype(args.dtype)
 
-    if args.local_planner == "DiT":
-        model = InternVLAN1ForCausalLM.from_pretrained(
-            args.model_path,
-            dtype=model_dtype,
-            device_map={"": device},
-        )
-    else:
-        model = Qwen3VLForConditionalGeneration.from_pretrained(
-            args.model_path,
-            dtype=model_dtype,
-            # attn_implementation="flash_attention_2",
-            device_map={"": device},
-        )
+    model = Qwen3VLForConditionalGeneration.from_pretrained(
+        args.model_path,
+        dtype=model_dtype,
+        # attn_implementation="flash_attention_2",
+        device_map={"": device},
+    )
 
     detector_path = args.oracle_detector_model_path.strip()
     if detector_path:
         model_2 = Qwen3VLForConditionalGeneration.from_pretrained(
             detector_path,
-            dtype=model_dtype,
-            attn_implementation="flash_attention_2",
-            device_map={"": device},
-        )
-    elif args.local_planner == "DiT":
-        model_2 = Qwen3VLForConditionalGeneration.from_pretrained(
-            args.model_path,
             dtype=model_dtype,
             attn_implementation="flash_attention_2",
             device_map={"": device},
@@ -249,7 +221,7 @@ def main() -> None:
     init_distributed_mode(args)
     os.makedirs(args.output_path, exist_ok=True)
 
-    processor = AutoProcessor.from_pretrained(args.processor_path) # TODO：将这个换成GG-Nav
+    processor = AutoProcessor.from_pretrained(args.processor_path or args.model_path)
     processor.tokenizer.padding_side = "left"
     device = torch.device(f"cuda:{args.local_rank}")
 

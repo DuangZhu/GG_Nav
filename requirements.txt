@@ -1,9 +1,9 @@
-# Additional index for the CUDA 11.8 PyTorch wheels.
---extra-index-url https://download.pytorch.org/whl/cu118
+# Additional index for the CUDA 12.4 PyTorch wheels.
+--extra-index-url https://download.pytorch.org/whl/cu124
 
-torch==2.1.2
-torchvision==0.16.2
-torchaudio==2.1.2
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
 torchcodec==0.2.0
 mmengine==0.10.7
 lmdb==1.6.2

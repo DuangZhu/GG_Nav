@@ -9,15 +9,10 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Type
 
-# Ensure ``from qwenvl.*`` resolves to the in-tree package at
-# ``GG-NAV/Qwen3-VL/qwen-vl-finetune/qwenvl`` even when the ``tasks`` package
-# is imported directly (e.g. from a REPL or unit test) without going through
-# ``evaluate_navigation.py``. The insertion is idempotent so it never
-# overrides an existing user-provided resolution order.
-_QWENVL_ROOT = (Path(__file__).resolve().parents[2] / "Qwen3-VL" / "qwen-vl-finetune")
-_QWENVL_ROOT_STR = str(_QWENVL_ROOT)
-if _QWENVL_ROOT.is_dir() and _QWENVL_ROOT_STR not in sys.path:
-    sys.path.insert(0, _QWENVL_ROOT_STR)
+# Resolve bundled evaluation utilities when this package is imported directly.
+_EVALUATION_ROOT = str(Path(__file__).resolve().parents[1])
+if _EVALUATION_ROOT not in sys.path:
+    sys.path.insert(0, _EVALUATION_ROOT)
 
 __all__ = ["get_evaluator"]
 

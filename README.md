@@ -23,7 +23,7 @@ conda install habitat-sim=0.2.4 withbullet headless -c conda-forge -c aihabitat
 pip install -r requirements.txt
 ```
 
-The evaluation code also imports model definitions and utilities from `Qwen3-VL/qwen-vl-finetune/qwenvl`; keep this package available alongside `evaluation/`.
+The release supports `shortest_path` evaluation. The required question-matching utility is bundled under `evaluation/qwenvl/`; the `Qwen3-VL/` source tree and training code are not required. The PyTorch packages in `requirements.txt` target PyTorch 2.6.0 with CUDA 12.4.
 
 ## Data Preparation
 
@@ -33,8 +33,7 @@ Prepare scene assets and evaluation datasets under `data/`:
 ggnav/
 ├── evaluation/
 ├── train/                       # Planned; not included in the current release
-├── Qwen3-VL/                    # Model definitions and utilities used by evaluation
-├── checkpoints/                # Model and processor files, or local symlinks
+├── checkpoints/                # Model
 ├── requirements.txt
 └── data/
     ├── scene_data/
@@ -47,11 +46,11 @@ ggnav/
         └── vlln/
 ```
 
-The task YAML files under `evaluation/config/` use `../data/scene_data/` and `../data/datasets/`, relative to `evaluation/`. Copy or link your evaluation datasets and scene summaries into the directories above. HM3D ObjectNav episode files must also have `scene_dataset_config` pointing to `../data/scene_data/hm3d_v0.2/hm3d_annotated_basis.scene_dataset_config.json` when using this layout.
+The task YAML files under `evaluation/config/` use `../data/scene_data/` and `../data/datasets/`, relative to `evaluation/`. Copy or link your evaluation datasets and scene summaries into the directories above.
 
 ## Evaluation
 
-The launch scripts automatically switch to `evaluation/` and save results under `output/`. Place model files under `checkpoints/` using the checkpoint names in the scripts, or set `MODEL_PATH` and `PROCESSOR_PATH` to absolute paths before running. The local scripts activate the `ggnav` Conda environment. Configure the NPC API endpoint and fill in `evaluation/api_key.txt`; scene summaries are read from `data/scene_summary/`. The current entrypoint initializes the NPC client for both task families, so provide its API settings for ObjectNav as well.
+The launch scripts automatically switch to `evaluation/` and save results under `output/`. Place model files under `checkpoints/` using the checkpoint names in the scripts, or set `MODEL_PATH` to an absolute path before running. The model and processor are loaded from the same checkpoint directory. The local scripts activate the `ggnav` Conda environment. Configure the NPC API endpoint and fill in `evaluation/api_key.txt`; scene summaries are read from `data/scene_summary/`. The current entrypoint initializes the NPC client for both task families, so provide its API settings for ObjectNav as well.
 
 ```bash
 conda activate ggnav
@@ -66,13 +65,13 @@ Use the local scripts with `--nproc_per_node=1`. For a short debug run, reduce `
 # HM3D ObjectNav (the local script currently uses one GPU)
 bash run_eval_objectnav_local.sh
 
-# VL-LN (set --nproc_per_node=1 in the script first)
+# VL-LN (the local script currently uses one GPU)
 bash run_eval_vlln_local.sh
 ```
 
 ### Multiple GPUs
 
-Set `--nproc_per_node` in either local script to the number of GPUs to use, then run the same command. The current VL-LN local script uses two GPUs by default.
+Both local scripts use one GPU by default. Set `--nproc_per_node` in either local script to the number of GPUs to use, then run the same command.
 
 For a Slurm cluster, adjust the resource and network settings in the corresponding scripts:
 

@@ -9,7 +9,6 @@ import os
 import copy
 import json
 import inspect
-import sys
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence, List, Tuple, Any, Union, Set
 from collections import OrderedDict
@@ -30,7 +29,6 @@ from torch import Tensor
 from transformers.image_utils import to_numpy_array
 from depth_camera_filtering import filter_depth
 from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
-from qwenvl.internvla_n1.internvla_n1 import InternVLAN1ForCausalLM
 from copy import deepcopy
 import shutil
 from collections import Counter
@@ -69,7 +67,6 @@ from vlfm.policy.utils.pointnav_policy import WrappedPointNavResNetPolicy
 from vlfm.utils.geometry_utils import rho_theta
 from vlfm.obs_transformers.utils import image_resize
 from dist import *
-sys.path.append('/mnt/hwfile/zhushaohao/000working/Qwen3-VL/qwen-vl-finetune')
 from qwenvl.data.utils.pair_question import match_utterance
 
 DEFAULT_IMAGE_TOKEN = "<image>"

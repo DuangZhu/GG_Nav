@@ -10,7 +10,7 @@
 #     bash srun_eval_iign.sh
 #
 # NOTE: configure model checkpoints and API settings before running;
-#       place checkpoints under ../checkpoints/ or set MODEL_PATH and PROCESSOR_PATH.
+#       place checkpoints under ../checkpoints/ or set MODEL_PATH for both model and processor.
 #       Data paths resolve under ../data/.
 # =============================================================================
 
@@ -36,7 +36,7 @@ echo "SPLIT=${SPLIT}"
 MID_RUN_NAME="20260416_one_step_two_task/checkpoint-66000"
 PLANNER_NAME='shortest_path'
 MODEL_NAME="${MODEL_PATH:-../checkpoints/${MID_RUN_NAME}}"
-PROCESSOR_PATH="${PROCESSOR_PATH:-../checkpoints/Qwen3-VL-4B-Instruct}"
+PROCESSOR_PATH="${MODEL_NAME}"
 
 srun -p wam_agent \
     --gres=gpu:8 \
