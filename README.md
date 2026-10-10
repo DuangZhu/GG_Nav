@@ -5,7 +5,7 @@
 GG-Nav is a navigation framework that learns structured chain-of-thought (CoT) reasoning through supervised fine-tuning to better use streaming observations and precisely localize navigation targets to support action generation. It is the first model to jointly support interactive instance-goal navigation and ObjectNav. Its reasoning consists of two stages: **Observation-to-Evidence**, which extracts goal-relevant evidence from intermediate frames between adjacent decision steps, and **Evidence-to-Decision**, which combines the current observation with accumulated evidence to ground the target and generate navigation actions or clarification questions. GG-Nav improves success rates over state-of-the-art methods on HM3D ObjectNav, VL-LN, and CoIN by 3.1%, 16.6%, and 5.3%, respectively, and demonstrates zero-shot generalization on a Unitree Go2 robot in unseen real-world environments.
 
 - **ObjectNav:** Navigate to an instance of a specified object category, evaluated on HM3D ObjectNav.
-- **interactive instance-goal navigation:** Navigate to a target instance while asking clarification questions to resolve ambiguity, evaluated on VL-LN and CoIN.
+- **interactive instance-goal navigation (IIGN):** Navigate to a target instance while asking clarification questions to resolve ambiguity, evaluated on VL-LN and CoIN.
 
 ## TODO
 
@@ -61,8 +61,6 @@ ggnav/
 The task YAML files under `evaluation/config/` use `../data/scene_data/` and `../data/datasets/`, relative to `evaluation/`. Copy or link your evaluation datasets and scene summaries into the directories above.
 
 ## Evaluation
-
-The launch scripts automatically switch to `evaluation/` and save results under `output/`. Place model files under `checkpoints/` using the checkpoint names in the scripts, or set `MODEL_PATH` to an absolute path before running. The model and processor are loaded from the same checkpoint directory. The local scripts activate the `ggnav` Conda environment. Configure the NPC API endpoint and fill in `evaluation/api_key.txt`; scene summaries are read from `data/scene_summary/`. The current entrypoint initializes the NPC client for both task families, so provide its API settings for ObjectNav as well.
 
 ```bash
 conda activate ggnav
