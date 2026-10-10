@@ -1,0 +1,14 @@
+# file
+draft.py
+*.pyc
+*.pkl
+*.txt
+
+# directory
+draft/
+check_sim/
+scene_summary
+*/__pycache__
+__pycache__
+api_key/
+.vscode/

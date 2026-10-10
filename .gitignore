@@ -1,0 +1,40 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+
+
+# IDE / system
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Local tools and notebooks
+.codebuddy/
+.ipynb_checkpoints/
+
+# Logs
+*.log
+/evaluation/data
+/evaluation/api_key.txt
+/scene_dataset
+/output
+
+# Keep this release limited to evaluation and root documentation.
+/*
+!/evaluation/
+!/README*
+!/*.txt
+!/.gitignore
+!/.github/
+
+# Local evaluation artifacts
+/evaluation/output/
+/evaluation/wandb/
+/evaluation/visualizations/
+/evaluation/exps_pix/
+/evaluation/eval_results.txt
+*.out
