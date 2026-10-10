@@ -67,7 +67,7 @@ from vlfm.policy.utils.pointnav_policy import WrappedPointNavResNetPolicy
 from vlfm.utils.geometry_utils import rho_theta
 from vlfm.obs_transformers.utils import image_resize
 from dist import *
-from qwenvl.data.utils.pair_question import match_utterance
+from .pair_question import match_utterance
 
 DEFAULT_IMAGE_TOKEN = "<image>"
 MAX_STEPS = 8

@@ -23,7 +23,7 @@ conda install habitat-sim=0.2.4 withbullet headless -c conda-forge -c aihabitat
 pip install -r requirements.txt
 ```
 
-The release supports `shortest_path` evaluation. The required question-matching utility is bundled under `evaluation/qwenvl/`; the `Qwen3-VL/` source tree and training code are not required. The PyTorch packages in `requirements.txt` target PyTorch 2.6.0 with CUDA 12.4.
+The release supports `shortest_path` evaluation. The required question-matching utility is bundled at `evaluation/tasks/pair_question.py`; the `Qwen3-VL/` source tree and training code are not required. The PyTorch packages in `requirements.txt` target PyTorch 2.6.0 with CUDA 12.4.
 
 ## Data Preparation
 

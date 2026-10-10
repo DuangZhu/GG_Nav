@@ -23,7 +23,7 @@ from habitat_baselines.config.default import get_config as get_habitat_config
 from omegaconf import OmegaConf, DictConfig, open_dict
 from npc.utils.get_description import get_path_description, get_path_description_without_additional_info
 from dist import *
-from qwenvl.data.utils.pair_question import match_utterance
+from .pair_question import match_utterance
 from typing import List, Dict, Any, Optional, Tuple
 
 
