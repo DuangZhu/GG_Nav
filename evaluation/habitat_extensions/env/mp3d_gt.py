@@ -81,7 +81,6 @@ class MP3DGTPerception:
                     in_box_image_coords = in_box_image_coords[mask]
                     semantic_image[in_box_image_coords[:, 0], in_box_image_coords[:, 1]] = 1
                 except:
-                    import ipdb; ipdb.set_trace()
                     print()
                 semantic_image = fill_small_holes(semantic_image, area_threshold)
             semantic_images.append(semantic_image)
