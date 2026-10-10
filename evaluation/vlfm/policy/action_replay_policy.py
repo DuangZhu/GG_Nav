@@ -146,8 +146,8 @@ class ActionReplayPolicy(BasePolicy):
         self._obstacle_map.update_map(
             depth,
             tf_camera_to_episodic,
-            0.5,  # self._min_depth,
-            5.0,  # self._max_depth,
+            0.5,
+            5.0,
             fx,
             fy,
             self._camera_fov_rad,

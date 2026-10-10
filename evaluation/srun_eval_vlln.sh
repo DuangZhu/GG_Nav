@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
-# =============================================================================
 # IIGN (Instance Image / Dialog Goal Navigation, MP3D) evaluation launcher.
-#
 # Task family : IIGN (dialog-capable, allows both move and talk actions)
 # Config      : config/iign_vlln.yaml
 # Entry script: evaluate_navigation.py (unified evaluator)
-#
 # Usage:
 #     bash srun_eval_iign.sh
-#
 # NOTE: configure model checkpoints and API settings before running;
 #       place checkpoints under ../checkpoints/ or set MODEL_PATH for both model and processor.
 #       Data paths resolve under ../data/.
-# =============================================================================
 
 # Resolve relative paths from evaluation/, regardless of the caller working directory.
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -67,4 +62,3 @@ srun -p wam_agent \
     --dialog_recent_step_n 200 \
     --dialog_recent_n 20 \
     --dialog_radius 240.0 \
-    # --save_video \

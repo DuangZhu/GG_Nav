@@ -106,7 +106,6 @@ class SimpleNPC:
                 if len(nearby_objects) > 0:
                     goal_information += '\nnearby objects: ' + ','.join(nearby_objects)
                 goal_information += 'whole description: ' + object_dict[instance_id]['caption']
-                # import ipdb; ipdb.set_trace()
                 answer = self.ask_directly(
                     template_type="one_turn_prompt",
                     question=question,

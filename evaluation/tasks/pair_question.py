@@ -170,9 +170,7 @@ TEMPLATES = [
 ]
 
 
-# -----------------------------
 # 2) ordinal 归一化
-# -----------------------------
 def ordinal_suffix(n: int) -> str:
     if 10 <= n % 100 <= 20:
         return "th"
@@ -287,9 +285,7 @@ def normalize_ordinal(text: Optional[str]) -> Optional[int]:
     return ORDINAL_WORD_TO_NUM.get(s)
 
 
-# -----------------------------
 # 3) 文本预处理
-# -----------------------------
 def normalize_text(text: str) -> str:
     text = text.strip()
     text = text.replace("—", "-").replace("–", "-")
@@ -297,9 +293,7 @@ def normalize_text(text: str) -> str:
     return text
 
 
-# -----------------------------
 # 4) 模板 -> regex
-# -----------------------------
 PLACEHOLDER_PATTERNS = {
     "instance": r"(?P<instance>.+?)",
     "except_clause": r"(?P<except_clause>.+?)",
@@ -350,9 +344,7 @@ def template_to_regex(template: str) -> re.Pattern:
     return re.compile(regex_str, re.IGNORECASE)
 
 
-# -----------------------------
 # 5) 展开所有模板
-# -----------------------------
 def flatten_templates(templates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     输出每个叶子模板:
@@ -389,9 +381,7 @@ def flatten_templates(templates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return flattened
 
 
-# -----------------------------
 # 6) 匹配函数
-# -----------------------------
 def score_match(template: str, groups: Dict[str, Optional[str]]) -> int:
     """
     简单打分：
@@ -443,7 +433,6 @@ def match_utterance(
         candidates.append((score_match(item["template"], groups), result))
 
     if not candidates:
-        # import ipdb;ipdb.set_trace()
         return None
 
     # 取分数最高的
@@ -451,9 +440,7 @@ def match_utterance(
     return candidates[0][1]
 
 
-# -----------------------------
 # 7) 示例
-# -----------------------------
 if __name__ == "__main__":
     tests = [
         "Which one looks like the target stool?",

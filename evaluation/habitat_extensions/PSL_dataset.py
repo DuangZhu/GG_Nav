@@ -89,22 +89,6 @@ class AttrObjNavDatasetV1(PointNavDatasetV1):
         if len(dataset["episodes"]) == 0:
             return dataset
 
-        # goals_by_category = {}
-        # for i, ep in enumerate(dataset["episodes"]):
-        #     ep_goal_id = "_".join((
-        #         ep["scene_id"]['scene_id'].split("/")[-1].split(".")[0],
-        #         ep["goal_object_id"]
-        #     ))
-        #     dataset["episodes"][i]["object_category"] = dataset["goals"][ep_goal_id][
-        #         "object_category"
-        #     ]
-        #     ep = AttrObjNavEpisode(**ep)
-
-        #     goals_key = ep.goals_key
-        #     if goals_key not in goals_by_category:
-        #         goals_by_category[goals_key] = ep.goals
-
-        #     dataset["episodes"][i]["goals"] = []
 
         dataset["goals_by_category"] = dataset["goals"]
 
@@ -202,13 +186,6 @@ class AttrObjNavDatasetV1(PointNavDatasetV1):
         if "attribute_data" in deserialized:
             self.attribute_data = deserialized["attribute_data"]
 
-        # assert len(self.category_to_task_category_id) == len(
-        #     self.category_to_scene_annotation_category_id
-        # )
-
-        # assert set(self.category_to_task_category_id.keys()) == set(
-        #     self.category_to_scene_annotation_category_id.keys()
-        # ), "category_to_task and category_to_mp3d must have the same keys"
 
         if len(deserialized["episodes"]) == 0:
             return

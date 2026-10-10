@@ -81,7 +81,6 @@ if __name__ == "__main__":
             image = str_to_image(payload["image"])
             return {"response": self.ask(image, payload.get("prompt"))}
 
-    # blip = BLIP2Server(name="blip2_opt", model_type="pretrain_opt2.7b")
     blip = BLIP2Server(name="blip2_t5", model_type="pretrain_flant5xl")
     print("Model loaded!")
     print(f"Hosting on port {args.port}...")

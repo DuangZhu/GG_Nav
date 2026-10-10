@@ -104,7 +104,6 @@ class ImageGoalSensor(Sensor):
         self._current_image_goal = self._sim._sensors[sensor_uuid].get_observation()[:, :, :3]
 
         self._remove_sensor(sensor_uuid)
-        # print("Reloading sensors suite")
         self._current_episode_id = episode_uniq_id  # cache the current image
         h, w = self.IMAGE_SIZE
         Image.fromarray(self._current_image_goal).save(f"instance_image_{h}_{w}.png")

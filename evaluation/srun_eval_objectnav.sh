@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
-# =============================================================================
 # ObjectNav (Object Goal Navigation, HM3D) evaluation launcher.
-#
 # Task family : Object Goal (move-only)
 # Config      : config/objectnav_hm3d.yaml
 # Entry script: evaluate_navigation.py (unified evaluator)
-#
 # Usage:
 #     bash srun_eval_objectnav.sh
-#
 # NOTE: configure model checkpoints and API settings before running;
 #       place checkpoints under ../checkpoints/ or set MODEL_PATH for both model and processor.
 #       Data paths resolve under ../data/.
-# =============================================================================
 
 # Resolve relative paths from evaluation/, regardless of the caller working directory.
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -61,4 +56,3 @@ srun -p wam_agent \
     --baseline_config_path config/gen_videos.yaml \
     --eval_split ${SPLIT} \
     --scene_summary ../data/scene_summary \
-    # --save_video \

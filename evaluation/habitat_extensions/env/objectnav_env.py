@@ -1,5 +1,4 @@
 from typing import Optional
-# from gym.core import Env
 import habitat
 import gym
 from habitat.core.dataset import Dataset, Episode
@@ -61,7 +60,6 @@ class ObjectNavEnv(Env):
             self.semantic_category_mapping = OVON_Cat()
         else:
             raise NotImplementedError
-        # import ipdb;ipdb.set_trace()
         if exp_config.detector == 'mp3d_gt':
             self.segmentation = MP3DGTPerception(self.max_depth, self.min_depth, self._fx, self._fy)
         else:
@@ -72,7 +70,6 @@ class ObjectNavEnv(Env):
 
     def reset(self):
         obs = super().reset()
-        # import ipdb;ipdb.set_trace()
         if self.exp_config.task in self._OBJECT_TASKS:
             objects = self.sim.semantic_annotations().objects
             self.semantic_category_mapping.reset_instance_id_to_category_id(objects)
@@ -153,17 +150,6 @@ class ObjectNavEnv(Env):
         return sem_obs
     
     def _preprocess_obs_obj(self, obs: Observations):
-        # print(f"raw obs: {obs.keys()}")
-        # depth = filter_depth(obs["depth"].reshape(obs["depth"].shape[:2]), blur_type=None)
-        # if obs["objectgoal"]:
-        #     goal_id, goal_name = self._preprocess_goal(obs["objectgoal"])
-        #     print(f"Goal ID: {goal_id}, Goal Name: {goal_name}")
-        #     task_observations={
-        #             "object_goal": goal_id,
-        #             "goal_name": goal_name
-        #         }
-        # else:
-            # task_observations={}
         task_observations={}
 
         if self.exp_config.goal_map_only:
@@ -181,7 +167,6 @@ class ObjectNavEnv(Env):
         if 'semantic' not in obs:
             obs["semantic"] = np.zeros((obs["rgb"].shape[0], obs["rgb"].shape[1], 1))
         sem_obs = self._preprocess_semantic(sem_obs, obs["semantic"])
-        # print(f"sem_obs: {sem_obs}")
         return sem_obs
     
     def _preprocess_semantic(self, obs:Observations, habitat_semantic: np.ndarray):
@@ -203,7 +188,6 @@ class ObjectNavEnv(Env):
     def _process_info(self, info: Dict[str, Any]) -> Any:
         if info and self.visualize:
             info["semantic_category_mapping"] = self.semantic_category_mapping
-            # self.visualizer.visualize(**info)
     
     @property
     def original_action_space(self):

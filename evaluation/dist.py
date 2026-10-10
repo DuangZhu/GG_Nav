@@ -159,7 +159,6 @@ def setup_for_distributed(is_master):
 
     def print(*args, **kwargs):
         force = kwargs.pop('force', False)
-        # kwargs['flush'] = True
         if is_master or force:
             now = datetime.datetime.now().time()
             builtin_print('[{}] '.format(now), end='')  # print with time stamp

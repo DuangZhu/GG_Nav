@@ -39,7 +39,6 @@ import habitat_sim
 from habitat import logger, Env
 from habitat_extensions import measures
 import habitat_extensions.instance_image_nav
-# import habitat_extensions.uncertainty_task
 from habitat_extensions.dialog_dataset import DialogDatasetV1
 from habitat_extensions.env.objectnav_env import ObjectNavEnv
 from habitat_extensions.PSL_dataset import AttrObjNavDatasetV1
@@ -89,7 +88,6 @@ TEMPLATES_TEST = [
             "Is this the {instance} you asked for?",
             "Is this the {instance} we are searching for?",
             "Is this one the {instance}?",
-            # "Is the {instance}"
         ],
     },
     {
@@ -265,7 +263,6 @@ CATEGORY_3 = [
 ]
 
                 
-
 import os
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
@@ -437,7 +434,6 @@ class VLNEvaluator:
         self.output_path = output_path
         self.epoch = epoch
         self.config_path = config_path
-        # self.config = get_habitat_config(config_path)
         self.config = get_config(config_path, args.baseline_config_path)
         self.agent_config = get_agent_config(self.config.habitat.simulator)
         self.sim_sensors_config = self.config.habitat.simulator.agents.main_agent.sim_sensors
@@ -450,7 +446,6 @@ class VLNEvaluator:
         self.dialog_radius = args.dialog_radius
         self.use_oracle_for_tracking = False
         with habitat.config.read_write(self.config):
-            # self.config.habitat.task.measurements.success.success_distance=3.0
             self.config.exp.task = args.task
             self.config.habitat.dataset.split = self.split
             self.config.habitat.task.measurements.update(
@@ -491,20 +486,9 @@ class VLNEvaluator:
         self.processor = processor
         self.W = 640
         self.H = 480
-        # pointnav policy
-        # self._pointnav_policy = WrappedPointNavResNetPolicy('data/pointnav_weights.pth')
-        # self._pointnav_depth_image_shape = (224, 224)
-        # self._pointnav_stop_radius = 0.5
 
-        # pixelnav policy
-        # from pixel_nav.policy_agent import Policy_Agent
-        # self.pixel_nav_agent = Policy_Agent(
-        #     model_path="/mnt/hwfile/OpenRobotLab/wanchenyang/share/pixel_nav/pixel_nav_policy_2025-04-21 15:28:49/pixelnav_50.ckpt",
-        #     device=self.device,
-        #     max_token_length=20,
-        # )
 
-        # --- Prompt templates aligned with training (data_qwen_dialog_with_onestep_v3.py) ---
+        # Navigation prompt templates.
         # Turn 1 Human: instruction + history + (pre_lookdown) + tracking_instruction + decision_instruction
         # The template uses placeholders: <instruction>, <history>, <tracking_instruction>
         # Two variants: with and without pre_lookdown image
@@ -525,27 +509,6 @@ class VLNEvaluator:
         # Keep legacy references for non-dialog / objectnav paths
         prompt_nav = 'You are an autonomous navigation assistant. Your task is to <instruction>. You need to navigate to the target. When you want to output a waypoint you need to TILT DOWN (↓) by 30 degrees then output the next point coordinates in the image. In case the point is out of view, utilize the turn actions: TURN LEFT (←) or TURN RIGHT (→) by 30 degrees. Please output STOP when you have successfully completed the task.'
         self.conversation_nav = [{"from": "human", "value": prompt_nav}, {"from": "gpt", "value": answer}]
-        # Decision instruction (matching training lines 1066-1076)
-        # self.decision_instruction = (
-        #     "Your current image is <image>. Please first output the tracking result in this image, "
-        #     "and then decide the next action based on all the context. "
-        #     "You can either choose to move or talk. "
-        #     "If you choose to talk, you may ask a question about either a tracking image or the current image: "
-        #     "use 'Frame_1: ...? Frame_2: ...?' for tracking images, and use 'Frame_c: ...?' for the current image. "
-        #     "If choosing to move, when you want to output a waypoint, you need to TILT DOWN (↓) by 30 degrees "
-        #     "and then output the next point coordinates in the image. "
-        #     "If the point is out of view, use the turn actions TURN LEFT (←) or TURN RIGHT (→) by 30 degrees. "
-        #     "Please output STOP when you have successfully completed the task. "
-        # )
-        # self.decision_instruction = (
-        #     f"Your current image is <image>. Please first output the tracking result in this image, "
-        #     f"and then decide the next action based on all the context. "
-        #     f"You are only allowed to move. "
-        #     f"If choosing to move, when you want to output a waypoint, you need to TILT DOWN (↓) by 30 degrees "
-        #     f"and then output the next point coordinates in the image. "
-        #     f"If the point is out of view, use the turn actions TURN LEFT (←) or TURN RIGHT (→) by 30 degrees. "
-        #     f"Please output STOP when you have successfully completed the task. "
-        # )
         self.decision_instruction = (
             f"Your current image is <image>. "
             f"Decide the next action based on all the context. "
@@ -600,14 +563,6 @@ class VLNEvaluator:
         })
                                 
         self.objectnav_instructions =[
-            # 'Go to find the {target_object}, move close to the object, and stop.',
-            # 'Search for the {target_object}, move close to the object, and stop.',
-            # 'Find the {target_object} in the scene, move close to the object, and stop.',
-            # 'Explore the area until you find the {target_object}, move close to the object, and stop.',
-            # 'Move towards the {target_object}, move close to the object, and stop.',
-            # 'Navigate to the {target_object}, move close to the object, and stop.',
-            # 'Find and stop in front of the {target_object}.',
-            # 'Move close to the area where the {target_object} is located, and stop.'
             "search for {target_object}"
         ]
         
@@ -825,9 +780,6 @@ class VLNEvaluator:
     
     def config_env(self) -> Env:
         env = ObjectNavEnv(config=self.config.habitat, exp_config=self.config.exp)
-        # env.sim.recompute_navmesh()
-        # env = Env(config=self.config)
-        # env.episodes = env.episodes[0:1]
         return env
     
     def dot_matrix_two_dimensional(self, image_or_image_path, save_path = None, dots_size_w = 8, dots_size_h = 8, save_img = False, font_path = '/mnt/hwfile/OpenRobotLab/weimeng/fonts/arial.ttf', pixel_goal = None):
@@ -925,8 +877,6 @@ class VLNEvaluator:
             ),
             "pointgoal_with_gps_compass": rho_theta_tensor,
         }
-        # print(f"_pointnav_stop_radius: {self._pointnav_stop_radius}")
-        # print(f"depth for pointnav: {obs_pointnav['depth']}")
         if rho < self._pointnav_stop_radius and stop:
             return 0
         action = self._pointnav_policy.act(obs_pointnav, masks, deterministic=True)
@@ -1039,35 +989,19 @@ class VLNEvaluator:
             scene_id = scene.split('/')[-2]
             
             print(f"scene_id = {scene_id}")
-            # episode_id = 0
             process_bar = tqdm.tqdm(range(len(episodes[idx::self.env_num])), desc=f"scene {scene_id}")
             for episode in episodes[idx::self.env_num]:
-                # if "en" not in episode.instruction.language:
-                #     continue
                 meta = self._build_episode_meta(episode, scene_id)
                 episode_instruction = meta.episode_instruction
                 print("episode start", episode_instruction)
-                # ref_path = [episode.start_position] + episode.reference_path + [episode.goals[0].position]
                 episode_id = meta.episode_id
                 episode_input_tokens_total = 0
                 episode_input_tokens_per_step = []
-                # if episode_id not in [4800,4829,5049,5336,5395,5454,5512,5513,5616,5675,5751,5785,6013,6104,6183,6275,6297,6330,383]:
-                # if episode_id not in [3743]:
-                #     continue
                 if (scene_id, episode_id, episode_instruction) in done_res:
                     continue
                 env.current_episode = episode
                 observations = env.reset()
                 instance_type = meta.instance_type
-                # if instance_type not in CATEGORY_2:
-                #     continue
-                # observations = {
-                #     'rgb': observations.rgb,
-                #     'depth': observations.depth,
-                #     'compass': observations.compass,
-                #     'gps': observations.gps,
-                #     'semantic': observations.semantic
-                # }
                 agent_state = env.sim.get_agent_state()
                 rotation = agent_state.rotation
                 translation = agent_state.position
@@ -1108,7 +1042,6 @@ class VLNEvaluator:
                 messages = []
                 dialogs_idx = []
                 dialogs = []
-                # nav_dialogs = []
                 allowed_turns = self.args.turn
                 agent_found_target = False
                 found_target = False
@@ -1120,7 +1053,6 @@ class VLNEvaluator:
                 step_id2track = {}
                 failure_reason = None
                 bbox_blocks = None
-                # check=False
                 confirmed_target_label = None
                 while not env.episode_over and (step_id - action_list.count(5)) <= self.max_episode_steps:
                     rgb = observations["rgb"]
@@ -1135,7 +1067,6 @@ class VLNEvaluator:
                     height = agent_state.position[1] - initial_height # Habitat GPS makes west negative, so flip y
                     camera_position = np.array([x, -y, self._camera_height + height])
                     robot_xy = camera_position[:2]
-                    # tf_camera_to_episodic = self.xyz_yaw_to_tf_matrix(camera_position, camera_yaw) @ self.get_axis_align_matrix()
                     tf_camera_to_episodic = self.xyz_yaw_pitch_to_tf_matrix(camera_position, camera_yaw, np.deg2rad(30)) @ self.get_axis_align_matrix()
                     
                     image = Image.fromarray(rgb).convert('RGB')  # raw observation image 
@@ -1152,7 +1083,6 @@ class VLNEvaluator:
                             look_down_image = look_down_image.resize((self.args.resize_w, self.args.resize_h))
                             look_down_image = self.dot_matrix_two_dimensional(look_down_image, save_img=False, save_path=f'test_{step_id}.jpg')
                             save_dot = True
-                        # rgb_list.append(look_down_image)
                     elif action == 6:
                         pass
                     else:
@@ -1168,17 +1098,9 @@ class VLNEvaluator:
                                     found_target = True
                                     found_step = int(step_id)
                                     break
-                                # else:
-                                #     print('[debug] the seg are is :', observations["semantic"][seg_i].sum())
-                            # dialogs, fake_bboxes = self.make_fake_dialog(observations["semantic"], dialogs, instance_type, step_id, scene_id, episode_id)
-                            # bbox_image, gt_box = draw_bboxes(image, fake_bboxes, is_norm=True, gt_bbox=None)
-                            # out_image_path = os.path.join(self.output_path, f"vis_0", scene_id, f"{episode_id:04d}", f"grounding_{step_id:04d}.png")
-                            # p.parent.mkdir(parents=True, exist_ok=True)
-                            # bbox_image.save(out_image_path)
                             
                     
                     info = env.get_metrics()
-                    # if step_id == 270:
 
                     if len(action_seq) == 0 and goal is None:
                         if action != 5 and action !=6:
@@ -1252,16 +1174,9 @@ class VLNEvaluator:
                                             if dialog['true_idx'] == n:
                                                 thinking = dialog.get('thinking', "")
                                                 output += thinking
-                                                # if dialog['role'] == 'navigator':
-                                                #     output += f"<dialog><|{dialog['role']}|>{dialog['message']}"
-                                                # elif dialog['role'] == 'oracle':
-                                                #     output += f"<|{dialog['role']}|>{dialog['message']}</dialog>"
-                                                # else:
-                                                #     raise ValueError(f"unknown role: {dialog.get('role')!r}")
                                         placeholder[pos+1] = output
                                     placeholder = (DEFAULT_IMAGE_TOKEN + '\n').join(placeholder)
 
-                                # Build tracking instruction (matching training lines 1056-1064)
                                 tracking_instruction = ""
                                 if tracking_images:
                                     tracking_imgs_tokens = (DEFAULT_IMAGE_TOKEN + '\n') * len(tracking_images)
@@ -1410,8 +1325,6 @@ class VLNEvaluator:
                                     **inputs_t1,
                                     max_new_tokens=4096,
                                     do_sample=False,
-                                    # use_cache=True,
-                                    # past_key_values=past_key_values,
                                 )
 
                             tracking_output = self.processor.tokenizer.decode(
@@ -1428,8 +1341,6 @@ class VLNEvaluator:
                                         do_sample=True,
                                         temperature=0.7,
                                         top_p=0.9,
-                                        # use_cache=True,
-                                        # past_key_values=past_key_values,
                                     )
 
                                 tracking_output = self.processor.tokenizer.decode(
@@ -1480,39 +1391,8 @@ class VLNEvaluator:
                             max_retry = 10
                             llm_outputs = None
                             for retry_i in range(max_retry):
-                                # if retry_i > 0:
-                                #     past_key_values.crop(t1_cache_len)
 
-                                # past_len = past_key_values.get_seq_length()
-                                # delta_inputs['attention_mask'] = torch.cat([
-                                #     torch.ones(1, past_len, dtype=delta_inputs['attention_mask'].dtype,
-                                #                device=delta_inputs['attention_mask'].device),
-                                #     delta_inputs['attention_mask'][:, -delta_seq_len:]
-                                # ], dim=1)
 
-                                # cache_position = torch.arange(
-                                #     past_len, past_len + delta_inputs['input_ids'].shape[1],
-                                #     device=self.model.device
-                                # )
-                                # with torch.no_grad():
-                                    # output_ids_t2 = self.model.generate(
-                                    #     **delta_inputs,
-                                    #     max_new_tokens=2048,
-                                    #     do_sample=not agent_found_target,
-                                    #     temperature=0.7 if not agent_found_target else None,
-                                    #     top_p=0.9 if not agent_found_target else None,
-                                    #     use_cache=True,
-                                    #     past_key_values=past_key_values,
-                                    #     cache_position=cache_position,
-                                    # )
-                                # llm_outputs = self.processor.tokenizer.decode(
-                                #     output_ids_t2[0][delta_inputs['input_ids'].shape[1]:],
-                                #     skip_special_tokens=True
-                                # )
-                                # if step_id > 100:
-                                #     os.makedirs("./_trash/tmp", exist_ok=True)
-                                #     save_first_message_images_once(messages, output_dir="./_trash/tmp")
-                                #     shutil.rmtree("./_trash/tmp", ignore_errors=True)
                                 print('sources (Turn 2)', step_id, messages)
                                 verify_inputs = self.processor.apply_chat_template(
                                     messages,
@@ -1521,7 +1401,6 @@ class VLNEvaluator:
                                     return_dict=True,
                                     return_tensors="pt",
                                 ).to(self.model.device)
-                                # import ipdb;ipdb.set_trace()
                                 with torch.no_grad():
                                     verify_output_ids = self.model.generate(
                                         **verify_inputs,
@@ -1534,12 +1413,6 @@ class VLNEvaluator:
                                     verify_output_ids[0][verify_inputs['input_ids'].shape[1]:],
                                     skip_special_tokens=True,
                                 )
-                                # if llm_outputs_verify == llm_outputs:
-                                #     print(f'[VERIFY] step_id={step_id}: ALIGNED')
-                                # else:
-                                #     print(f'[VERIFY] step_id={step_id}: MISALIGNED!')
-                                #     print(f'  cache  output: {llm_outputs}')
-                                #     print(f'  message output: {llm_outputs_verify}')
                                 if ('<move>' in llm_outputs) or ('<talk>' in llm_outputs):
                                     break
                             else:
@@ -1550,8 +1423,6 @@ class VLNEvaluator:
                                 'content': [{'type': 'text', 'text': llm_outputs}]
                             })
                             print('step_id:', step_id, 'output text:', llm_outputs)
-                        # if '<talk>' not in llm_outputs:
-                        #     pre_decision_step = step_id
                         self._append_action_log(
                             scene_id,
                             episode_id,
@@ -1559,8 +1430,6 @@ class VLNEvaluator:
                             step_id=step_id,
                         )
 
-                        # if '<talk>' not in llm_outputs and extract_question_Guaranteed(llm_outputs) is not None:
-                        #     llm_outputs = add_talk_before_question(llm_outputs)
                         bbox_blocks, q_list, label_set = merge_tracking_and_current_outputs(
                             tracking_output=tracking_output,
                             llm_outputs=llm_outputs,
@@ -1606,15 +1475,12 @@ class VLNEvaluator:
                                     current_instances = [obj for obj in bbox_blocks[frame_idx] if obj.get("label") == target_name]
                                     bbox = bbox_blocks[frame_idx]
                                     bbox = sorted(bbox, key=lambda d: d["bbox_2d"][0])
-                                    # gt_idx = next((i for i, d in enumerate(bbox) if d.get("label") == best[1]), -1)
                                     num_bbox = len(bbox)
                                     question = '??'
                                     unknwon_count = sum(1 for x in bbox if x['label'] in label_set)
-                                    # assert question is not None, "bug:question is none!"
                                     if num_bbox > 1:
                                         npc_answer = f"{target_name}."
                                     else:
-                                        # question = f"Is this the {instance_type} you're looking for?"
                                         npc_answer = "Yes."
                                     bbox_message = format_with_tabs(bbox)
                                     think = (
@@ -1623,7 +1489,6 @@ class VLNEvaluator:
                                         f"In this image, I detected {num_bbox} {instance_type}(s).\n"
                                         f"Target found.</think>"
                                     )
-                                    # dialogs = []
                                     dialogs = remove_instance_qa(dialogs, target_name)
                                     dialogs.append({'role': 'navigator', 'message': question, 'true_idx': frame_idx + pre_decision_step + 1 + tracking_offset, 'thinking': think})
                                     dialogs.append({'role': 'oracle', 'message': npc_answer, 'true_idx': frame_idx + pre_decision_step + 1 + tracking_offset})
@@ -1682,7 +1547,6 @@ class VLNEvaluator:
                                                 'message': npc_answer,
                                                 'true_idx': frame_idx + pre_decision_step + 1 + tracking_offset
                                             })
-                                            # import ipdb;ipdb.set_trace()
                                             self._append_action_log(
                                                 scene_id,
                                                 episode_id,
@@ -1720,90 +1584,7 @@ class VLNEvaluator:
                                                 int(frame_idx + pre_decision_step + tracking_offset)
                                             )
 
-                            # action = 6
-                            # continue
 
-                        # else:
-                            # bbox_blocks_ = extract_bbox_blocks_from_chat_sources(llm_outputs)
-                            # if bbox_blocks_:
-                            #     bbox_blocks = bbox_blocks_
-                            # if bbox_blocks:
-                            #     if not agent_found_target:
-                            #         fallback_best = (-1.0, None, None)  # (iou, label, frame_idx)
-
-                            #         for frame_idx, bbox in enumerate(bbox_blocks):
-                            #             if not bbox:
-                            #                 continue
-                            #             if frame_idx >= len(cur_segs):
-                            #                 continue
-
-                            #             seg_map = cur_segs[frame_idx]
-                            #             gt_box = mask01_to_bbox(seg_map)
-                            #             if gt_box is None:
-                            #                 continue
-
-                            #             denorm_bbox_list = denorm_bbox(
-                            #                 bbox, seg_map, scale=1000.0, clamp=True
-                            #             )
-
-                            #             for item_idx, item in enumerate(bbox):
-                            #                 pred_box = denorm_bbox_list[item_idx]["bbox_2d"]
-                            #                 lb = denorm_bbox_list[item_idx].get("label")
-                            #                 iou = IoU(pred_box, gt_box)
-
-                            #                 if iou > fallback_best[0]:
-                            #                     fallback_best = (iou, lb, frame_idx)
-
-                            #         if fallback_best[0] > 0.2:
-                            #             target_name = fallback_best[1]
-                            #             frame_idx = fallback_best[2]
-                            #             confirmed_target_label = target_name
-
-                            #             agent_found_target = True
-                            #             exp2nav_step = frame_idx + pre_decision_step + tracking_offset
-
-                            #             bbox = bbox_blocks[frame_idx]
-
-                            #             dialogs = remove_instance_qa(dialogs, target_name)
-
-                            #             nav_dialog, oracle_dialog = build_updated_tracking_dialog(
-                            #                 instance_type=instance_type,
-                            #                 bbox=bbox,
-                            #                 target_name=target_name,
-                            #                 abs_frame_idx=frame_idx + pre_decision_step + 1 + tracking_offset,
-                            #             )
-
-                            #             dialogs.append(nav_dialog)
-                            #             dialogs.append(oracle_dialog)
-
-                            #             self._append_action_log(
-                            #                 scene_id,
-                            #                 episode_id,
-                            #                 [nav_dialog["message"], oracle_dialog["message"]],
-                            #                 step_id=step_id,
-                            #             )
-
-                            #     else:
-                            #         for frame_idx, bbox in enumerate(bbox_blocks):
-                            #             if not bbox:
-                            #                 continue
-                            #             if frame_idx >= len(cur_segs):
-                            #                 continue
-
-                            #             cur_iou = best_iou_for_target_label(
-                            #                 bbox_list=bbox,
-                            #                 seg_map=cur_segs[frame_idx],
-                            #                 target_label=confirmed_target_label,
-                            #             )
-
-                            #             if cur_iou is not None:
-                            #                 tracking_iou_history.append(float(cur_iou))
-                            #                 tracking_step_history.append(
-                            #                     int(frame_idx + pre_decision_step + tracking_offset)
-                            #                 )
-
-                            #     bbox_blocks = None
-                            # # ========= fallback end =========
                         if '↓' not in llm_outputs:
                             pre_decision_step = step_id
 
@@ -1817,7 +1598,6 @@ class VLNEvaluator:
                             else:
                                 try:
                                     print('coords:', coord)
-                                    # check=True
                                     coord = self.denorm_pixel(coord)
                                     pixel_goal = [int(coord[1]), int(coord[0])]  # switch the goal o
                                 except:
@@ -1861,9 +1641,6 @@ class VLNEvaluator:
                                 )
                                 pix_goal_image = copy.copy(image_dp)
                                 images_dp = torch.stack([pix_goal_image, image_dp]).unsqueeze(0).to(self.device)
-                                # depth_dp = look_down_depth.unsqueeze(-1).to(torch.bfloat16)
-                                # pix_goal_depth = copy.copy(depth_dp)
-                                # depths_dp = torch.stack([pix_goal_depth, depth_dp]).unsqueeze(0).to(self.device)
 
                                 with torch.no_grad():
                                     dp_actions = self.model.generate_traj(traj_latents, images_dp, depths_dp=None)
@@ -1905,8 +1682,6 @@ class VLNEvaluator:
                                 )
 
                                 images_dp = torch.stack([pix_goal_image, image_dp]).unsqueeze(0).to(self.device)
-                                # depth_dp = look_down_depth.unsqueeze(-1).to(torch.bfloat16)
-                                # depths_dp = torch.stack([pix_goal_depth, depth_dp]).unsqueeze(0).to(self.device)
                                 with torch.no_grad():
                                     dp_actions = self.model.generate_traj(traj_latents, images_dp, depths_dp=None)
 
@@ -1953,8 +1728,6 @@ class VLNEvaluator:
                         frame = append_text_underneath_image(frame, f"step: {step_id}")
                         frame = append_text_underneath_image(frame, f"action: {llm_outputs}")
                         vis_frames.append(frame)
-                        # if check:
-                        #     check = False
                         plt.imsave(os.path.join(self.output_path, f'check_sim_{self.epoch}', f'frame_{idx}.jpg'), frame)
                         
                     print("step_id", step_id, "action", action)
@@ -1964,8 +1737,6 @@ class VLNEvaluator:
                         env.step(action)
                         observations, _, _ = env.apply_action(action)
                     elif action == 0:
-                        # observations, _, _ = env.apply_action(1)
-                        # observations, _, _ = env.apply_action(1)
                         observations, _, _ = env.apply_action(1)
                         observations, _, _ = env.apply_action(1)
                         observations, _, _ = env.apply_action(action)
@@ -1983,7 +1754,6 @@ class VLNEvaluator:
                             track_img = step_id2track[idx_]  
                             track_img = track_img.resize((640, 480))
                             track_img_np = np.array(track_img)
-                            # track_img_np = cv2.cvtColor(track_img_np, cv2.COLOR_RGB2BGR)
                             vis_frames[idx_][:480, :640] = track_img_np
                     vis_frames = unify_to_first(vis_frames)
                     out_dir = os.path.join(self.output_path, f"vis_0", scene_id, f"{episode_id:04d}")
@@ -2027,7 +1797,6 @@ class VLNEvaluator:
                     "episode_input_tokens_total": episode_input_tokens_total,
                 }
                 self._append_result(result)
-                # exit()
         env.close()
         return torch.tensor(sucs).to(self.device), torch.tensor(spls).to(self.device), torch.tensor(oss).to(self.device), torch.tensor(nes).to(self.device), torch.tensor(len(sucs)).to(self.device)
 
@@ -2045,4 +1814,3 @@ class VLNEvaluator:
         else: 
             source[0]["value"] = f"{prompt}."
         return source
-

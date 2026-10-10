@@ -139,14 +139,3 @@ if __name__ == "__main__":
     print("Model loaded!")
     print(f"Hosting on port {args.port}...")
     host_model(yolov7, name="yolov7", port=args.port)
-
-    # Instantiate model
-    # model = YOLOv7(weights="data/yolov7-e6e.pt")
-    # img_path = "data/horses.jpg"
-    # img = cv2.imread(img_path)
-    # # Convert to RGB
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # # Predict
-    # pred = model.predict(img)
-    # print("Pred")
-    # print(pred)

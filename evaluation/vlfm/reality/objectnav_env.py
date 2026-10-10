@@ -19,12 +19,6 @@ RIGHT_CROP = 60
 NOMINAL_ARM_POSE = np.deg2rad([0, -170, 120, 0, 55, 0])
 
 VALUE_MAP_CAMS = [
-    # SpotCamIds.BACK_FISHEYE,
-    # SpotCamIds.BACK_DEPTH_IN_VISUAL_FRAME,
-    # SpotCamIds.LEFT_FISHEYE,
-    # SpotCamIds.LEFT_DEPTH_IN_VISUAL_FRAME,
-    # SpotCamIds.RIGHT_FISHEYE,
-    # SpotCamIds.RIGHT_DEPTH_IN_VISUAL_FRAME,
     SpotCamIds.HAND_COLOR,
 ]
 

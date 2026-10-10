@@ -24,7 +24,6 @@ def main(cfg: RealityConfig) -> None:
         spot.blocking_stand()
         robot = BDSWRobot(spot)
         robot.open_gripper()
-        # robot.set_arm_joints(NOMINAL_ARM_POSE, travel_time=0.75)
         cmd_id = robot.spot.move_gripper_to_point(np.array([0.35, 0.0, 0.6]), np.deg2rad([0.0, 20.0, 0.0]))
         spot.block_until_arm_arrives(cmd_id, timeout_sec=1.5)
         env = ObjectNavEnv(

@@ -109,6 +109,5 @@ class TrajectoryVisualizer:
         """Converts a metric coordinate to a pixel coordinate"""
         # Need to flip y-axis because pixel coordinates start from top left
         px = pt * self._pixels_per_meter * np.array([-1, -1]) + self._origin_in_img
-        # px = pt * self._pixels_per_meter + self._origin_in_img
         px = px.astype(np.int32)
         return px

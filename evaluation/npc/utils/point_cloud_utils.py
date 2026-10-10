@@ -36,7 +36,6 @@ def is_inside(src_pts, target_pts, thresh=0.5):
         hull = scipy.spatial.ConvexHull(target_pts)
     except:
         return False
-    # print("vertices of hull: ", np.array(hull.vertices).shape)
     hull_vertices = np.array([[0,0,0]])
     for v in hull.vertices:
         try:
@@ -49,7 +48,6 @@ def is_inside(src_pts, target_pts, thresh=0.5):
     # Don't want threshold to be too large (specially with more objects, like 4, 0.9*thresh becomes too large)
     thresh_obj_particles = thresh * num_src_pts
     src_points_in_hull = is_point_in_hull(src_pts, hull_vertices)
-    # print("src pts in target, thresh: ", src_points_in_hull.sum(), thresh_obj_particles)
     if src_points_in_hull.sum() > thresh_obj_particles:
         return True
     else:

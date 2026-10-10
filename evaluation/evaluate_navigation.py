@@ -31,9 +31,7 @@ from npc.simple_npc.simple_npc import SimpleNPC
 from tasks import get_evaluator
 
 
-# ---------------------------------------------------------------------------
 # CLI parsing
-# ---------------------------------------------------------------------------
 def _resolve_dtype(dtype_str: str) -> torch.dtype:
     """Map the ``--dtype`` string to a concrete ``torch.dtype``."""
     if dtype_str == "float16":
@@ -109,9 +107,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# ---------------------------------------------------------------------------
 # Model loading
-# ---------------------------------------------------------------------------
 def _load_models(args: argparse.Namespace, device: torch.device):
     """Load the primary policy and, when required, the auxiliary detector.
 
@@ -123,7 +119,6 @@ def _load_models(args: argparse.Namespace, device: torch.device):
     model = Qwen3VLForConditionalGeneration.from_pretrained(
         args.model_path,
         dtype=model_dtype,
-        # attn_implementation="flash_attention_2",
         device_map={"": device},
     )
 
@@ -143,9 +138,7 @@ def _load_models(args: argparse.Namespace, device: torch.device):
     return model, model_2
 
 
-# ---------------------------------------------------------------------------
 # Distributed metric aggregation
-# ---------------------------------------------------------------------------
 def _sum_or_zero(x: torch.Tensor) -> torch.Tensor:
     if x.numel() == 0:
         return torch.tensor(0.0, device=x.device, dtype=torch.float32)
@@ -181,9 +174,7 @@ def _aggregate_and_dump(sucs, spls, oss, nes, args: argparse.Namespace) -> None:
             f.write(json.dumps(result_all, ensure_ascii=False) + "\n")
 
 
-# ---------------------------------------------------------------------------
 # Top-level orchestration
-# ---------------------------------------------------------------------------
 def evaluate(model, processor, args: argparse.Namespace, model_2=None) -> None:
     """Instantiate the task-specific evaluator and run one full pass."""
     model.eval()

@@ -56,9 +56,6 @@ class DialogDatasetV1(Dataset):
     ) -> None:
 
         deserialized = json.loads(json_str)
-        # self.instruction_vocab = VocabDict(
-        #     word_list=deserialized["instruction_vocab"]["word_list"]
-        # )
         if "category_to_task_category_id" in deserialized:
             self.category_to_task_category_id = deserialized["category_to_task_category_id"]
 

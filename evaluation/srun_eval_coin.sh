@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
-# =============================================================================
 # CoIN (Conversational Instance Navigation, HM3D) evaluation launcher.
-#
 # Task family : IIGN (CoIN is an IIGN sub-type; instruction is built from
 #               ``episode.object_category + " | " + episode.instruction``,
 #               and the agent is allowed to both move and talk)
 # Config      : config/iign_coin.yaml
 # Entry script: evaluate_navigation.py (unified evaluator)
-#
 # Usage:
 #     bash srun_eval_coin.sh
-#
 # NOTE: configure model checkpoints and API settings before running;
 #       place checkpoints under ../checkpoints/ or set MODEL_PATH for both model and processor.
 #       Data paths resolve under ../data/.
-# =============================================================================
 
 # Resolve relative paths from evaluation/, regardless of the caller working directory.
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -68,4 +63,3 @@ srun -p wam_agent \
     --dialog_recent_step_n 4000 \
     --dialog_recent_n 20 \
     --dialog_radius 240.0 \
-    # --save_video \

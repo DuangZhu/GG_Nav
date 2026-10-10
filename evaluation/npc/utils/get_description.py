@@ -183,7 +183,6 @@ def get_room_name(room):
     return room_name_dict[room]
 
 def get_start_description(angle2first_point, height_diff, room = None):
-    # des = np.random.choice(ROOM_START).format(room=get_room_name(room)) + ' ' + np.random.choice(SHOW_PATH) + '\n'
     des = ''
     if height_diff > 0.1:
         des += str(des.count('\n')+1) + '. ' + np.random.choice(GO_STAIRS).format(direction='up') + ', '

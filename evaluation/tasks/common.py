@@ -122,10 +122,7 @@ def split_and_clean(text):
         if part == '<image>':
             results.append(part)
         else:
-            # if '<think>' not in part:
             clean_part = part.replace('\n', '').strip()
-            # else:
-            #     clean_part = part
             if clean_part:
                 results.append(clean_part)
     return results
@@ -282,7 +279,6 @@ def get_path_description_(env, object_dict, region_dict):
     path_length = calculate_path_length(goal_path)
     pl = path_length[-1]
     goal_index = max([i for i, c in enumerate(path_length) if c < 4])
-    # goal_index = len(goal_path)-1
     if goal_index == 0:
         goal_index = len(goal_path)-1
     questioned_path = goal_path[:goal_index+1]
@@ -555,8 +551,6 @@ def grounding_npc_answer(
         if best_score > iou_thr:
             return f"{denorm_bbox_list[best_idx]['label']}."
         return "None of them."
-    # if num_unseen == -1:
-    #     return ''
     raise ValueError(f"num_unseen invalid (expect >=1). got {num_unseen}")
 
 

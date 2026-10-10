@@ -48,7 +48,6 @@ class DialogDatasetV1(Dataset):
         dataset_filename = config.data_path.format(split=config.split)
         with gzip.open(dataset_filename, "rt") as f:
             self.from_json(f.read(), scenes_dir=config.scenes_dir)
-        # import ipdb;ipdb.set_trace()
         if not self.episodes:
             dataset_path = Path(dataset_filename).resolve()
             content_dir = dataset_path.parent / "content"
@@ -57,7 +56,6 @@ class DialogDatasetV1(Dataset):
                 for p in sorted(content_dir.glob("*.json.gz")):
                     with gzip.open(p, "rt", encoding="utf-8") as f:
                         self._from_json_append(f.read(), scenes_dir=config.scenes_dir)
-        # import ipdb;ipdb.set_trace()
         self.episodes = list(
             filter(self.build_content_scenes_filter(config), self.episodes)
         )
@@ -83,10 +81,6 @@ class DialogDatasetV1(Dataset):
     ) -> None:
 
         deserialized = json.loads(json_str)
-        # import ipdb;ipdb.set_trace()
-        # self.instruction_vocab = VocabDict(
-        #     word_list=deserialized["instruction_vocab"]["word_list"]
-        # )
         if "category_to_task_category_id" in deserialized:
             self.category_to_task_category_id = deserialized["category_to_task_category_id"]
 
@@ -115,10 +109,6 @@ class DialogDatasetV1(Dataset):
     ) -> None:
 
         deserialized = json.loads(json_str)
-        # import ipdb;ipdb.set_trace()
-        # self.instruction_vocab = VocabDict(
-        #     word_list=deserialized["instruction_vocab"]["word_list"]
-        # )
         if "category_to_task_category_id" in deserialized:
             self.category_to_task_category_id = deserialized["category_to_task_category_id"]
 
@@ -137,7 +127,6 @@ class DialogDatasetV1(Dataset):
             
             episode_name = episode_['scene_id'].split('/')[-1].split('.')[0] + '_' + str(episode_['goal_object_id'])
             episode.goals = [copy.deepcopy(deserialized["goals"][episode_name])]
-            # print(episode_name)
             
             for g_index, goal in enumerate(episode.goals):
                 view_points = []

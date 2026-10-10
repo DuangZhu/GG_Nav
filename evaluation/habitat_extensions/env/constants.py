@@ -1,7 +1,6 @@
 # ------------------------------------------------------------------------------
 # Original code from https://github.com/facebookresearch/home-robot
 # Copyright (c) Meta Platforms, Inc. and affiliates.
-#
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
@@ -25,7 +24,6 @@ hm3d_category_name_to_mp3d_category_name = {row["category"]: row["mpcat40"] for 
 
 # Color constants we use.
 # Note: originally from Habitat
-# from habitat_sim.utils.common import d3_40_colors_rgb
 d3_40_colors_rgb: np.ndarray = np.array(
     [
         [31, 119, 180],
@@ -120,9 +118,7 @@ class SemanticCategoryMapping(ABC):
     def num_sem_obj_categories(self):
         return self.num_sem_categories()
     
-# ----------------------------------------------------
 # COCO Indoor Categories
-# ----------------------------------------------------
 
 coco_categories = {
     "chair": 0,
@@ -276,14 +272,6 @@ class HM3DtoCOCOIndoor(SemanticCategoryMapping):
     def __init__(self):
         super().__init__()
         self.goal_id_to_goal_name = {idx: name for name, idx in coco_categories.items()}
-        # self.hm3d_goal_id_to_coco_goal_name = {
-        #     0: "chair",
-        #     1: "bed",
-        #     2: "potted plant",
-        #     3: "toilet",
-        #     4: "tv",
-        #     5: "couch",
-        # }
         self.hm3d_goal_id_to_coco_goal_name = {
             0: "chair",
             1: "bed",
@@ -339,9 +327,7 @@ class HM3DtoCOCOIndoor(SemanticCategoryMapping):
     def num_sem_categories(self):
         return 16
 
-# ----------------------------------------------------
 # hm3d 9 Indoor Categories
-# ----------------------------------------------------
 
 hm3d_9cat_color_palette = [
     0.9400000000000001,
@@ -417,9 +403,7 @@ hm3d_9cat_map_color_palette = [
     ]
 ]
 
-# ----------------------------------------------------
 # MP3D Categories
-# ----------------------------------------------------
 mp3d_21cats = {
             'chair':0, #g
             'table':1, #g
@@ -554,9 +538,7 @@ mp3d_map_color_palette = [
     ]
 ]
 
-# ----------------------------------------------------
 # hm3d 92 Indoor Categories
-# ----------------------------------------------------
 def getCMap(labelCount, cmapName='jet'):
     # Get jet color map from Matlab
     cmapGen = matplotlib.cm.get_cmap(cmapName, labelCount)

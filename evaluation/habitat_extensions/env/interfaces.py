@@ -11,12 +11,9 @@ class SemObservations:
     # --------------------------------------------------------
 
     # Joint states
-    # joint_positions: np.ndarray
 
     # Pose
     # TODO: add these instead of gps + compass
-    # base_pose: Pose
-    # ee_pose: Pose
 
     # Pose
     # (x, y) where positive x is forward, positive y is translation to left in meters
@@ -50,8 +47,6 @@ class SemObservations:
     ] = None  # end-effector position relative to the desired resting position
     is_holding: Optional[np.array] = None  # whether the agent is holding the object
     
-    # --------------------------------------------------------
     # Untyped task-specific observations
-    # --------------------------------------------------------
 
     task_observations: Optional[Dict[str, Any]] = None # object_goal, goal_name

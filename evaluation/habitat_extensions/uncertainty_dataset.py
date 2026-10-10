@@ -169,8 +169,6 @@ class LanguageUncertaintyDatasetV1(PointNavDatasetV1):
         subclass, create a customized iterator class like
         :ref:`EpisodeIterator` and override this method.
         """
-        # TODO: perform one iteration over the full dataset, than stop
-        # kwargs['cycle'] = False
         return EpisodeIterator(self.episodes, *args, **kwargs)
 
 
