@@ -23,9 +23,10 @@ __pycache__/
 /scene_dataset
 /output
 
-# Keep this release limited to evaluation and root documentation.
+# Keep this release limited to evaluation, images, and root documentation.
 /*
 !/evaluation/
+!/images/
 !/README*
 !/*.txt
 !/.gitignore
