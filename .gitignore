@@ -19,7 +19,6 @@ __pycache__/
 # Logs
 *.log
 /evaluation/data
-/evaluation/api_key.txt
 /scene_dataset
 /output
 
@@ -39,3 +38,9 @@ __pycache__/
 /evaluation/exps_pix/
 /evaluation/eval_results.txt
 *.out
+
+# Local data, model weights, and generated outputs
+/output_
+/checkpoints
+/data
+/Qwen3-VL

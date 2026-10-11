@@ -33,7 +33,7 @@ MODEL_NAME="${MODEL_PATH:-../checkpoints/${MID_RUN_NAME}}"
 PROCESSOR_PATH="${MODEL_NAME}"
 
 # ---- Output directory ----
-OUTPUT_DIR="../output_/${TASK}/${MID_RUN_NAME}_${TURN}/${SPLIT}"
+OUTPUT_DIR="../output/${TASK}/${MID_RUN_NAME}_${TURN}/${SPLIT}"
 mkdir -p "${OUTPUT_DIR}"
 
 # ---- Run on one GPU via torchrun ----
@@ -58,3 +58,4 @@ torchrun --nproc_per_node=1 --master_port=29500 evaluate_navigation.py \
     --dialog_recent_step_n 200 \
     --dialog_recent_n 20 \
     --dialog_radius 240.0 \
+    --save_video \
