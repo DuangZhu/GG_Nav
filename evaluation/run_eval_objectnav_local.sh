@@ -12,7 +12,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SCRIPT_DIR}" || exit 1
 
 # Activate conda environment
-conda activate ggnav
+# conda activate ggnav
 
 export MAGNUM_LOG=quiet HABITAT_SIM_LOG=quiet
 

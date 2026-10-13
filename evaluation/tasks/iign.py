@@ -556,7 +556,7 @@ class VLNEvaluator:
                         draw_shortest_path=True,
                         draw_view_points=True,
                         draw_goal_positions=True,
-                        draw_goal_aabbs=True,
+                        draw_goal_aabbs=False,
                         fog_of_war=FogOfWarConfig(
                             draw=True,
                             visibility_dist=5.0,
