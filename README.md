@@ -1,6 +1,11 @@
 
 
 # GG-Nav
+
+[![Paper](https://img.shields.io/badge/arXiv-2610.14541-b31b1b?logo=arxiv)](https://arxiv.org/abs/2610.14541)
+[![Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-yellow)](https://huggingface.co/zhushaohao/GG-Nav)
+[![Project Page](https://img.shields.io/badge/%F0%9F%8C%90-Project%20Page-blue)](https://duangzhu.github.io/GG-Nav-Project-Page/)
+
 ![GG-Nav overview and real-world experiments](images/teaser.png)
 GG-Nav is a navigation framework that learns structured chain-of-thought (CoT) reasoning through supervised fine-tuning to better use streaming observations and precisely localize navigation targets to support action generation. It is the first model to jointly support interactive instance-goal navigation and ObjectNav. Its reasoning consists of two stages: **Observation-to-Evidence**, which extracts goal-relevant evidence from intermediate frames between adjacent decision steps, and **Evidence-to-Decision**, which combines the current observation with accumulated evidence to ground the target and generate navigation actions or clarification questions. GG-Nav improves success rates over state-of-the-art methods on HM3D ObjectNav, VL-LN, and CoIN by 3.1%, 16.6%, and 5.3%, respectively, and demonstrates zero-shot generalization on a Unitree Go2 robot in unseen real-world environments.
 
@@ -31,6 +36,7 @@ The release supports `shortest_path` evaluation. The required question-matching 
 
 ### 1. Download Data & Assets
 
+- **Model Weights:** Download the GG-Nav model weights and accompanying configuration and tokenizer/processor files from [Hugging Face](https://huggingface.co/zhushaohao/GG-Nav) and place them under `checkpoints/`. The local evaluation scripts expect these files in `checkpoints/GG-NAV/checkpoint-66000/` by default. If you use a different directory, set `MODEL_PATH` to its path before running evaluation.
 - **Scene Datasets:** Download the [MP3D](https://niessner.github.io/Matterport/) scene dataset to `data/scene_data/mp3d/` and the [HM3D v0.2](https://aihabitat.org/datasets/hm3d/) scene dataset to `data/scene_data/hm3d_v0.2/`. Follow the linked download instructions to obtain the Habitat scene assets.
 - **Scene Summaries:** Download the [MP3D scene summaries](https://huggingface.co/datasets/InternRobotics/VL-LN-Bench/tree/main/raw_data/mp3d/scene_summary) to `data/scene_summary/`.
 - **HM3D ObjectNav Data:** Follow the [Habitat-Lab dataset download instructions](https://github.com/facebookresearch/habitat-lab/blob/main/DATASETS.md) for HM3D ObjectNav v2 and extract the dataset to `data/datasets/objectnav_hm3d_v2/`.
@@ -39,13 +45,15 @@ The release supports `shortest_path` evaluation. The required question-matching 
 
 ### 2. Directory Structure
 
-Prepare scene assets and evaluation datasets under `data/`:
+Place model files under `checkpoints/` and scene assets and evaluation datasets under `data/`:
 
 ```text
 ggnav/
 ├── evaluation/
 ├── train/                       # Planned; not included in the current release
-├── checkpoints/                # Model
+├── checkpoints/                # Model weights downloaded from Hugging Face
+│   └── GG-NAV/
+│       └── checkpoint-66000/    # Default model directory for local evaluation
 ├── requirements.txt
 └── data/
     ├── scene_data/
@@ -98,8 +106,18 @@ bash srun_eval_coin.sh
 
 ## Citation and Acknowledgments
 
-If you find GG-Nav useful in your research, please cite our paper.
+If you find GG-Nav useful in your research, please cite our [paper](https://arxiv.org/abs/2610.14541).
 
-**TODO:** Add the paper link and BibTeX citation.
+```bibtex
+@misc{zhu2026ggnav,
+  title={GG-Nav: Goal-oriented Grounding Chain-of-Thought Elicits Reasoning in Navigation Foundation Models},
+  author={Shaohao Zhu and Wensi Huang and Siqi Zhang and Yuqiang Yang and Meng Wei and Chenyang Wan and Tianle Liu and Tai Wang and Jinming Xu},
+  year={2026},
+  eprint={2610.14541},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2610.14541}
+}
+```
 
 We thank the developers of Qwen3-VL, Habitat, and VLFM, as well as the creators of the HM3D, Matterport3D, VL-LN, and CoIN datasets and benchmarks.
